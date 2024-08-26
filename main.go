@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/labstack/echo/v4"
 
@@ -26,16 +27,18 @@ func main() {
 	e := echo.New()
 
 	e.GET("/", handlers.Hello)
-	e.POST("/message", handle.Message)
+	e.GET("/message", handle.MessageReturn)
+	e.GET("/name/letter", handle.LetterReturn)
 
 	e.POST("/name", handle.Name)
 	e.POST("/name/letter", handle.Letter)
+	e.POST("/message", handle.Message)
 
 	go e.Start(":8080")
 
 	stop := make(chan os.Signal, 1)
 
-	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(stop, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	<-stop
 	log.Println("GF")
@@ -45,7 +48,8 @@ func main() {
 		log.Println("Ошибка закрытия БД")
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	// context.WithDeadline()
 	defer cancel()
 
 	if err := e.Shutdown(ctx); err != nil {

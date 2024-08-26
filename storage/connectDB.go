@@ -75,5 +75,55 @@ func (s StorageConnect) AddMessage(message model.Message) (string, error) {
 		return "Не удалось сохранить сообщение", err
 	}
 	return "Сообщение успешно добавлено", nil
+}
+
+func (s StorageConnect) GetMessage(message model.AnswMessage) ([]model.AnswMessage, error) {
+
+	rows, err := s.Db.Query("SELECT mess FROM messages WHERE user_id = $1", message.UserID)
+	if err != nil {
+		log.Println("Error executing SQL query:", err)
+		log.Println("Ошибка при получении сообщений из базы данных")
+		return nil, err
+	}
+	defer rows.Close()
+
+	var Allmessages []model.AnswMessage
+
+	for rows.Next() {
+		var message model.AnswMessage
+		err := rows.Scan(&message.Answer)
+		if err != nil {
+			log.Println("Ошибка при сканировании строки:", err)
+			return nil, err
+		}
+		Allmessages = append(Allmessages, message)
+	}
+
+	return Allmessages, nil
+
+}
+
+func (s StorageConnect) GetLetter(letterServ model.Letter) ([]model.Letter, error) {
+
+	rows, err := s.Db.Query("SELECT item FROM letters WHERE user_id = $1", letterServ.UserID)
+	if err != nil {
+		log.Println("Error executing SQL query:", err)
+		log.Println("Ошибка при получении сообщений из базы данных")
+		return nil, err
+	}
+	defer rows.Close()
+
+	var AllLetters []model.Letter
+	for rows.Next() {
+		var Letter model.Letter
+		err = rows.Scan(&Letter)
+		if err != nil {
+			log.Println("Ошибка при сканировании строки:", err)
+			return nil, err
+		}
+		AllLetters = append(AllLetters, Letter)
+	}
+
+	return AllLetters, nil // исправить возвращаемые значения
 
 }

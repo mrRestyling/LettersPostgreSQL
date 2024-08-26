@@ -22,3 +22,16 @@ type Message struct {
 	UserID  int    `json:"user_id,omitempty"`
 	Message string `json:"message,omitempty"`
 }
+
+type AnswMessage struct {
+	UserID int    `json:"user_id,omitempty"`
+	Amount int    `json:"amount"`
+	Answer string `json:"answer"`
+}
+
+type Response struct {
+	UserID        int      `json:"user_id"`
+	UserName      string   `json:"user_name"`
+	TotalMessages int      `json:"total_messages"`
+	Messages      []string `json:"messages"`
+}

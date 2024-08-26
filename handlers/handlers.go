@@ -16,6 +16,8 @@ type ServiceInterface interface {
 	SetNameServ(fio model.FIO) (int, error)
 	AddLetterServ(letter model.Letter) (string, error)
 	AddMessageServ(message model.Message) (string, error)
+	GetMessageServ(messageFromHand model.AnswMessage) (model.Response, error)
+	GetLetterServ(messageFromHand model.Letter) (string, error)
 }
 
 func New(s ServiceInterface) Handlers {
@@ -60,6 +62,10 @@ func (h Handlers) Letter(c echo.Context) error {
 	return c.JSON(http.StatusOK, responceTo)
 }
 
+func Hello(c echo.Context) error {
+	return c.String(http.StatusOK, "Приветствую на сервере!")
+}
+
 func (h Handlers) Message(c echo.Context) error {
 
 	var messageClient model.Message
@@ -79,6 +85,40 @@ func (h Handlers) Message(c echo.Context) error {
 	return c.JSON(http.StatusOK, messageClientStr)
 }
 
-func Hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Приветствую на сервере!")
+func (h Handlers) MessageReturn(c echo.Context) error {
+
+	var messageClient model.AnswMessage
+
+	err := c.Bind(&messageClient)
+	if err != nil {
+		log.Println("Неверный запрос")
+		return err
+	}
+	log.Println("Запрошены сообщения пользователя №", messageClient.UserID)
+
+	messageClientStr, err := h.Service.GetMessageServ(messageClient)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	return c.JSON(http.StatusOK, messageClientStr)
+}
+
+func (h Handlers) LetterReturn(c echo.Context) error {
+
+	var letterR model.Letter
+
+	err := c.Bind(&letterR)
+	if err != nil {
+		log.Println("Неверный запрос")
+		return err
+	}
+	log.Println("Запрошены письма пользователя №", letterR.UserID)
+
+	answ, err := h.Service.GetLetterServ(letterR)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	return c.JSON(http.StatusOK, answ) // исправить answ
 }

@@ -12,6 +12,8 @@ type StoragerInterface interface {
 	SetName(fio model.FIO) (model.FIO, error)
 	AddLetter(letter model.Letter) (string, error)
 	AddMessage(message model.Message) (string, error)
+	GetMessage(message model.AnswMessage) ([]model.AnswMessage, error)
+	GetLetter(letterServ model.Letter) ([]model.Letter, error)
 }
 
 func New(s StoragerInterface) Service {
@@ -49,4 +51,41 @@ func (s Service) AddMessageServ(messageFromHand model.Message) (string, error) {
 	}
 
 	return message, nil
+}
+
+func (s Service) GetMessageServ(messageFromHand model.AnswMessage) (model.Response, error) {
+
+	arrMessages, err := s.Storage.GetMessage(messageFromHand)
+	if err != nil {
+		return model.Response{}, err
+	}
+
+	var fullansw []string
+
+	if messageFromHand.Amount != 0 {
+		for i := 0; i < messageFromHand.Amount; i++ {
+			fullansw = append(fullansw, arrMessages[i].Answer)
+		}
+	} else {
+
+		for _, m := range arrMessages {
+			fullansw = append(fullansw, m.Answer)
+		}
+	}
+
+	responce := model.Response{
+		UserID:        messageFromHand.UserID,
+		TotalMessages: len(arrMessages),
+		Messages:      fullansw,
+	}
+
+	return responce, nil
+}
+
+func (s Service) GetLetterServ(letterFromHand model.Letter) (string, error) {
+
+	s.Storage.GetLetter(letterFromHand)
+
+	return "", nil // исправить "" и nil
+
 }
