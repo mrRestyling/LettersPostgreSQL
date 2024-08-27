@@ -27,12 +27,13 @@ func main() {
 	e := echo.New()
 
 	e.GET("/", handlers.Hello)
-	e.GET("/message", handle.MessageReturn)
-	e.GET("/name/letter", handle.LetterReturn)
-
 	e.POST("/name", handle.Name)
-	e.POST("/name/letter", handle.Letter)
+
+	e.GET("/message", handle.MessageReturn)
 	e.POST("/message", handle.Message)
+
+	e.GET("/letter", handle.LetterReturn)
+	e.POST("/letter", handle.Letter)
 
 	go e.Start(":8080")
 
