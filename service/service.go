@@ -2,6 +2,8 @@ package service
 
 import (
 	"Psql/model"
+	"fmt"
+	"log"
 )
 
 type Service struct {
@@ -82,10 +84,23 @@ func (s Service) GetMessageServ(messageFromHand model.AnswMessage) (model.Respon
 	return responce, nil
 }
 
-func (s Service) GetLetterServ(letterFromHand model.Letter) (string, error) {
+func (s Service) GetLetterServ(letterFromHand model.Letter) ([]string, error) {
 
-	s.Storage.GetLetter(letterFromHand)
+	answStor, err := s.Storage.GetLetter(letterFromHand)
+	if err != nil {
+		log.Println("ошибка на сервисном уровне") //исрпавить
+	}
 
-	return "", nil // исправить "" и nil
+	var answInServ []string
+
+	for i, answOne := range answStor {
+
+		// fmt.Sprintf("Всего писем: %s\n")
+		formattedText := fmt.Sprintf("Письмо № %d || Заголовок: %s || Содержание письма: %s", i+1, answOne.Item, answOne.Letter)
+
+		answInServ = append(answInServ, formattedText)
+	}
+
+	return answInServ, nil
 
 }

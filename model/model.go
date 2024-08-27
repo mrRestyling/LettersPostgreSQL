@@ -35,3 +35,8 @@ type Response struct {
 	TotalMessages int      `json:"total_messages"`
 	Messages      []string `json:"messages"`
 }
+
+type JSONanswLetter struct {
+	AmountLetters int      `json:"Amount"`
+	LS            []string `json:"Letters"`
+}

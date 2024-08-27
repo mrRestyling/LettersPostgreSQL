@@ -17,7 +17,7 @@ type ServiceInterface interface {
 	AddLetterServ(letter model.Letter) (string, error)
 	AddMessageServ(message model.Message) (string, error)
 	GetMessageServ(messageFromHand model.AnswMessage) (model.Response, error)
-	GetLetterServ(messageFromHand model.Letter) (string, error)
+	GetLetterServ(messageFromHand model.Letter) ([]string, error)
 }
 
 func New(s ServiceInterface) Handlers {
@@ -120,5 +120,10 @@ func (h Handlers) LetterReturn(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	return c.JSON(http.StatusOK, answ) // исправить answ
+	result := model.JSONanswLetter{
+		AmountLetters: len(answ),
+		LS:            answ,
+	}
+
+	return c.JSON(http.StatusOK, result)
 }

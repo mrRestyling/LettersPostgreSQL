@@ -105,7 +105,7 @@ func (s StorageConnect) GetMessage(message model.AnswMessage) ([]model.AnswMessa
 
 func (s StorageConnect) GetLetter(letterServ model.Letter) ([]model.Letter, error) {
 
-	rows, err := s.Db.Query("SELECT item FROM letters WHERE user_id = $1", letterServ.UserID)
+	rows, err := s.Db.Query("SELECT item, letter FROM letters WHERE user_id = $1", letterServ.UserID)
 	if err != nil {
 		log.Println("Error executing SQL query:", err)
 		log.Println("Ошибка при получении сообщений из базы данных")
@@ -115,15 +115,15 @@ func (s StorageConnect) GetLetter(letterServ model.Letter) ([]model.Letter, erro
 
 	var AllLetters []model.Letter
 	for rows.Next() {
-		var Letter model.Letter
-		err = rows.Scan(&Letter)
+		var letter model.Letter
+		err = rows.Scan(&letter.Item, &letter.Letter)
 		if err != nil {
 			log.Println("Ошибка при сканировании строки:", err)
 			return nil, err
 		}
-		AllLetters = append(AllLetters, Letter)
+		AllLetters = append(AllLetters, letter)
 	}
 
-	return AllLetters, nil // исправить возвращаемые значения
+	return AllLetters, nil
 
 }
