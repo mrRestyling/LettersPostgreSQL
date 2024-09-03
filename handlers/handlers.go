@@ -10,6 +10,7 @@ import (
 
 type Handlers struct {
 	Service ServiceInterface
+	MuxECHO *echo.Echo
 }
 
 type ServiceInterface interface {
@@ -23,6 +24,7 @@ type ServiceInterface interface {
 func New(s ServiceInterface) Handlers {
 	return Handlers{
 		Service: s,
+		MuxECHO: echo.New(),
 	}
 }
 
@@ -58,7 +60,6 @@ func (h Handlers) Letter(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
-	//
 	return c.JSON(http.StatusOK, responceTo)
 }
 
