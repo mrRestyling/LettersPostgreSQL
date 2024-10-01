@@ -1,4 +1,4 @@
-# LettersPostgreSQL!
+# LettersPostgreSQL
 
 Этот проект предназначен для демонстрации использования PostgreSQL с языком GO.
 
