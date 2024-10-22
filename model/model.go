@@ -39,4 +39,4 @@ type Response struct {
 type JSONanswLetter struct {
 	AmountLetters int      `json:"Amount"`
 	LS            []string `json:"Letters"`
-}.
+}
